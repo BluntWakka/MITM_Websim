@@ -1,0 +1,11 @@
+{
+  "name": "mitm_websim",
+  "version": "1.0.0",
+  "description": "Idea of project is to encrypt a user provided piece of data with different encryption schemes and \r simulate what an attacker could do if they intercepted.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Charles Walker Blunt",
+  "license": "ISC"
+}
