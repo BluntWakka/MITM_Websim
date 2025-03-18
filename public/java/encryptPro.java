@@ -13,18 +13,12 @@ import java.security.spec.KeySpec;
 
 public class encryptPro
 {
-    public static void main(String[] args)
+    public static String encrypt(String[] args)
     {
+
         //Check for possible arg counts
         if (args.length == 2)
-        {
-            //Check if the file exists at all, if not, error out
-            File file = new File(args[1]);
-            if (!file.exists())
-            {
-                System.err.println("File does not exist!");
-                return;
-            }
+        {    
             try
             {
                 switch(args[0])
@@ -33,24 +27,12 @@ public class encryptPro
                     case "-d":
                         //DES encryption case
                         //General format of encryption/decryption taken from (and slightly modified) https://medium.com/@amit28amical/data-encryption-standard-des-code-in-java-4a45ad692bae
-                        byte[] asBytes = Files.readAllBytes(file.toPath());
+                        byte[] asBytes = args[1].getBytes();
                         SecretKey desKey;
 
-                        //Check to see if we are inputting a custom key or not, generate as necessary
-                        if (args.length == 4)
-                        {
-                            SecretKeyFactory MyKeyFactory = SecretKeyFactory.getInstance("DES");
-                            //Turn our string argument into bytes for key usage
-                            byte[] keyBytes = args[3].getBytes();
-                            DESKeySpec myMaterial = new DESKeySpec(keyBytes);
-                            desKey = MyKeyFactory.generateSecret(myMaterial);
-                            //If the key is not a valid one, the program will throw an error and will be caught
-                        }
-                        else
-                        {
-                            KeyGenerator Mygenerator = KeyGenerator.getInstance("DES");
-                            desKey = Mygenerator.generateKey();
-                        }                        
+                        //Generate key as necessary
+                        KeyGenerator Mygenerator = KeyGenerator.getInstance("DES");
+                        desKey = Mygenerator.generateKey();                    
 
                         //Create a cipher of the instance DES and initiailize with our key
                         //Encrypt the info
@@ -58,29 +40,27 @@ public class encryptPro
                         cip.init(cip.ENCRYPT_MODE, desKey);
                         byte[] myEncryptedBytes = cip.doFinal(asBytes);
 
-                        //Print it out in hex format (borrowed from genMD5.java)
+                        StringBuilder sbd = new StringBuilder();
                         for (byte b : myEncryptedBytes)
                         {
-                            System.out.print(String.format("%02x", b));
+                            sbd.append(String.format("%02x", b));
                         }
                         
-                        break;
+                        return sbd.toString();
                     case "-C":
                     case "-c":
                         //Case for Caesar Cipher encryption
                         //Method readAllBytes re-used from genMD5 hashing source https://stackoverflow.com/questions/858980/file-to-byte-in-java
-                        String content = new String(Files.readAllBytes(file.toPath()));
-                        String res = rot13(content);
+                        String res = rot13(args[1]);
                         //Commented out check for decryption working properly
                         //String res2 = rot13(res);
                         //System.out.println(res2);
-                        System.out.println(res);
-                        break;
+                        return res;
                     case "-A":
                     case "-a":
                         //AES encryption case
                         //General format of encryption/decryption taken from (and slightly modified) https://medium.com/@amit28amical/data-encryption-standard-des-code-in-java-4a45ad692bae
-                        byte[] aesAsBytes = Files.readAllBytes(file.toPath());
+                        byte[] aesAsBytes = args[1].getBytes();
                         Cipher aesCip = Cipher.getInstance("AES");
 
                         KeyGenerator AESgenerator = KeyGenerator.getInstance("AES");
@@ -90,25 +70,28 @@ public class encryptPro
                         //Create a cipher of the instance AES and initiailize with our key
                         //Encrypt the info
                         byte[] aesEncryptedBytes = aesCip.doFinal(aesAsBytes);
-
+                        StringBuilder sba = new StringBuilder();
                         //Print it out in hex format (borrowed from genMD5.java)
                         for (byte b : aesEncryptedBytes)
                         {
-                            System.out.print(String.format("%02x", b));
+                            sba.append(String.format("%02x", b));
                         }
-                        System.out.println("");                        
+                        return sba.toString();                    
                 }
             }
             catch (Exception e)
             {
                 System.err.println("Error occurred in file reading or incorrect key length");
+                return null;
             }
             
         }
         else
         {
             System.err.println("Wrong number of arguments provided");
+            return null;
         }
+        return null;
     }
 
     //This entire function was taken from https://stackoverflow.com/questions/8981296/rot-13-function-in-java by user georgiecasey!
