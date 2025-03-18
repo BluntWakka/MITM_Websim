@@ -7,6 +7,33 @@
   </head>
 <body>
 
+  <div id="container">
+    <form method="post">
+      <fieldset>
+        Plaintext: 
+        <input type="text" id="textInput" name="text"></input><br>
+        Key (will not be used if cipher does not require it!): 
+        <input type="text" id="keyInput" name="key"></input><br>
+        Method of Encryption: 
+        <select id="methodInput" name="method">          
+          <option value="AES">AES</option>
+          <option value="Caeser Cipher">Ceaser Cipher</option>
+          <option value="DES">DES</option> 
+        </select>
+        <button type="button" id="submitButton">Add</button>
+      </fieldset>
+    </form>
+    </div>
+    <div>
+      <table id = "responseTable">
+        <thead id = "responseHead">
+          <tr><th>Plaintext</th><th>Encrypted Text</th><th>Method</th><th>Key</th></tr>          
+        </thead>
+        <tbody id="responserows">
+        </tbody>
+      </table>
+    </div>
+
   <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>  
   <script src="scripts/script.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.js"></script>
