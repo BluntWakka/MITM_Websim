@@ -22,7 +22,7 @@ $("#submitButton").click(() => {
         $("#textInput").val("");
         $("#keyInput").val("");
         $("#methodInput").val("");
-        $("#responserows").append(`<tr><td>${e.plaintext}</td><td>${e.encryptedText}</td><td>${e.method}</td><td>${e.key}</td></tr>`)
+        $("#responserows").append(`<tr><td>${e.plaintext}</td><td>${e.encryptedText}</td><td>${e.method}</td><td>${e.key}</td><td>${e.entropy}</td><td>${e.factor}</td><td>${e.strength}</td></tr>`)
       },
       error: function (jqXHR, textStatus, errorThrown) {
         alert("Error: " + jqXHR.responseText);

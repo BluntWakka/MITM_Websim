@@ -4,8 +4,14 @@
   "description": "Idea of project is to encrypt a user provided piece of data with different encryption schemes and \r simulate what an attacker could do if they intercepted.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "http-server"
   },
   "author": "Charles Walker Blunt",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "crypto-js": "^4.2.0",
+    "express": "^5.1.0",
+    "http-server": "^14.1.1"
+  }
 }
