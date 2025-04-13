@@ -1,7 +1,10 @@
 const express = require("express");
 const path = require("path");
 const app = express();
+// External package
 const CryptoJS = require('crypto-js');
+// Node.js built in crypto package
+const crypto = require('crypto');
 
 function encrypt(type, toEncrypt, userKey)
 {
@@ -9,12 +12,15 @@ function encrypt(type, toEncrypt, userKey)
   {
     case "DES":
       const DEStext = CryptoJS.DES.encrypt(toEncrypt, userKey).ciphertext.toString(CryptoJS.enc.Hex);
-      return DEStext;
+      return [DEStext, 27.47];
     case "Caeser Cipher":
-      return rot13(toEncrypt);
+      return [rot13(toEncrypt), "No Key Used", 0];
     case "AES":
       const AEStext = CryptoJS.DES.encrypt(toEncrypt, userKey).ciphertext.toString(CryptoJS.enc.Hex);
-      return AEStext;
+      return [AEStext, userKey, 1000000];
+    case "MD5":
+      const MD5text = crypto.createHash('md5').update(toEncrypt).digest('hex');
+      return [MD5text, "No Key Used",1]
   }
 }
 
@@ -68,9 +74,9 @@ app.get("/submit", (req, res) => {
   //Call method to encrypt
   var encryptedResponse = encrypt(method, text, key);
   var entropy = Math.ceil(text.length * Math.log2(range(text)));
+  //TO DO: Add math to create drude metric for relative strenth utilizing entropy and hardness factor, then transfer to a string based on toughness (i.e one computer, nation-state, etc.)
 
-
-  e = new EncryptedEntry(text,encryptedResponse,method,key,entropy,time);
+  e = new EncryptedEntry(text,encryptedResponse[0],method,encryptedResponse[1],entropy,encryptedResponse[2],strength);
   const ret = JSON.stringify(e);
   res.end(ret);
 });
