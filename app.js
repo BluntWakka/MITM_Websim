@@ -6,6 +6,13 @@ const CryptoJS = require('crypto-js');
 // Node.js built in crypto package
 const crypto = require('crypto');
 
+/**
+ * Encrypt given password using user submitted type. Key is treated as optional or ignored if algorithm does not support it
+ * @param {String} type The type of encryption that will be utilized
+ * @param {String} toEncrypt The text to be encyrpted
+ * @param {String} userKey Optional key for algorithm if user wishes to submit one
+ * @returns {Array} [0]: Encrypted text, [1]: Key (or lack of), [2]: Hardness factor compared to MD5
+ */
 function encrypt(type, toEncrypt, userKey)
 {
   switch(type)
@@ -24,6 +31,11 @@ function encrypt(type, toEncrypt, userKey)
   }
 }
 
+/**
+ * Function to lookup range of password, optimistically extends range based on subcategories of symbol types
+ * @param {String} text Plain text to search throught and determine range of characters
+ * @returns {number} Range value to be used in entropy calculation
+ */
 function range(text)
 {
   var lowers = false;
@@ -51,6 +63,11 @@ function range(text)
 
 
 //Tweaked version of https://stackoverflow.com/questions/8981296/rot-13-function-in-java by user georgiecasey
+/**
+ * Function to transfer plain text into 13-shifted Ceaser cipher
+ * @param {String} toEncrypt The text to be encyrpted
+ * @returns {String} The encrypted text
+ */
 function rot13(toEncrypt)
 {
   var sb = "";
@@ -67,6 +84,7 @@ function rot13(toEncrypt)
   return sb.toString();
 }
 
+//GET endpoitn when a user clicks on the submit button
 app.get("/submit", (req, res) => {
   var text = req.query.text;
   const key = req.query.key;
@@ -74,13 +92,14 @@ app.get("/submit", (req, res) => {
   //Call method to encrypt
   var encryptedResponse = encrypt(method, text, key);
   var entropy = Math.ceil(text.length * Math.log2(range(text)));
-  //TO DO: Add math to create drude metric for relative strenth utilizing entropy and hardness factor, then transfer to a string based on toughness (i.e one computer, nation-state, etc.)
+  //TO DO: Add math to create crude metric for relative strenth utilizing entropy and hardness factor, then transfer to a string based on toughness (i.e one computer, nation-state, etc.)
 
   e = new EncryptedEntry(text,encryptedResponse[0],method,encryptedResponse[1],entropy,encryptedResponse[2],strength);
   const ret = JSON.stringify(e);
   res.end(ret);
 });
 
+//Class useful for creating structured variable to access all necessary values efficiently from
 class EncryptedEntry {
     constructor(plaintext, encryptedText, method, key, entropy, factor, strength) {
       this.plaintext = plaintext;
