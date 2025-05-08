@@ -19,7 +19,7 @@ function encrypt(type, toEncrypt, userKey)
   {
     case "DES":
       const DEStext = CryptoJS.DES.encrypt(toEncrypt, userKey).ciphertext.toString(CryptoJS.enc.Hex);
-      return [DEStext, 27.47];
+      return [DEStext, userKey, 27.47];
     case "Caeser Cipher":
       return [rot13(toEncrypt), "No Key Used", 0];
     case "AES":
@@ -56,7 +56,7 @@ function range(text)
   if (lowers) totRange+=26;
   if (uppers) totRange+=26;
   if (numbers) totRange+=10;
-  if (symbols) totRange+=30;
+  if (symbols) totRange+=33;
 
   return totRange;
 }
@@ -84,31 +84,72 @@ function rot13(toEncrypt)
   return sb.toString();
 }
 
-//GET endpoitn when a user clicks on the submit button
+//GET endpoint when a user clicks on the submit button
 app.get("/submit", (req, res) => {
   var text = req.query.text;
-  const key = req.query.key;
+  var key = req.query.key;
   const method = req.query.method;
+  const attackerCount = parseInt(req.query.attackerCount);
   //Call method to encrypt
   var encryptedResponse = encrypt(method, text, key);
-  var entropy = Math.ceil(text.length * Math.log2(range(text)));
-  //TO DO: Add math to create crude metric for relative strenth utilizing entropy and hardness factor, then transfer to a string based on toughness (i.e one computer, nation-state, etc.)
-
-  e = new EncryptedEntry(text,encryptedResponse[0],method,encryptedResponse[1],entropy,encryptedResponse[2],strength);
+  //Math to figure out time needed to crack a given entry
+  // For reference, RTX 2080 can do 2208324013 hashes per second
+  // Doing the math, our base calulation on a 8 length password with full US keyboard (95 range) on MD5 is going to be an entropy bit length of 8*log2(95) = 52.56
+  // 2^52.56 = 6.63e+15 / hashcat time (347 seconds) = factor of 8032
+  // Redoing this on a 9 length results in a very similar constant of around 8032 (error can be attributed to the hashcat recorded numbers losing specificity)
+  // (2^entropy / GPU HPS) / time = 8032
+  // ((2^entropy / GPU HPS) / 8032) = time
+  // Add mutable variables to change time around based on specific conditions
+  // ((2^entropy / GPU HPS) / 8032) * Hardness Factor / Attacker Count = time
+  var GPUHPS = 2208324013.0;
+  var entropy = text.length * Math.log2(range(text));
+  var seconds = ((Math.pow(2.0,entropy) / GPUHPS) / 8032.0) * encryptedResponse[2] / attackerCount;
+  console.log(seconds);
+  var time = "";
+  entropy = Math.ceil(entropy);
+  seconds = Math.floor(seconds);
+  //Transfer to more readable time
+  switch (true)
+  {
+    case seconds > 31536000:
+      time += (Math.floor(seconds/31536000) + " Year(s) ");
+      seconds = seconds % 31536000;
+    case seconds > 2629800:
+      time += (Math.floor(seconds/2629800) + " Month(s) ");
+      seconds = seconds % 2629800;
+    case seconds > 84600:
+      time += (Math.floor(seconds/86400) + " Day(s) ");
+      seconds = seconds % 86400;
+    case seconds > 3600:
+      time += (Math.floor(seconds/3600) + " Hour(s) ");
+      seconds = seconds % 3600;
+    case seconds > 60:
+      time += (Math.floor(seconds/60) + " Minute(s) ");
+      seconds = seconds % 60;
+    default:
+      time += (Math.floor(seconds) + " Second(s)");
+  }
+  //Check for key usage
+  if (key.length==0)
+  {
+    key = "No Key Used";
+  }
+  e = new EncryptedEntry(text,encryptedResponse[0],method,key,attackerCount,entropy,encryptedResponse[2],time);
   const ret = JSON.stringify(e);
   res.end(ret);
 });
 
 //Class useful for creating structured variable to access all necessary values efficiently from
 class EncryptedEntry {
-    constructor(plaintext, encryptedText, method, key, entropy, factor, strength) {
+    constructor(plaintext, encryptedText, method, key, attacker, entropy, factor, time) {
       this.plaintext = plaintext;
       this.encryptedText = encryptedText;
       this.method = method;
       this.key = key;
+      this.attacker = attacker;
       this.entropy = entropy;
       this.factor = factor;
-      this.strength = strength;
+      this.time = time;
     }
   }
 

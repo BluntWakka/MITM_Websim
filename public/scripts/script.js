@@ -16,13 +16,13 @@ $("#submitButton").click(() => {
         text: $("#textInput").val(),
         key: $("#keyInput").val(),
         method: $("#methodInput").val(),
+        attackerCount: $("#attackerInput").val()
       },
       dataType: "json",
       success: function (e) { 
         $("#textInput").val("");
         $("#keyInput").val("");
-        $("#methodInput").val("");
-        $("#responserows").append(`<tr><td>${e.plaintext}</td><td>${e.encryptedText}</td><td>${e.method}</td><td>${e.key}</td><td>${e.entropy}</td><td>${e.factor}</td><td>${e.strength}</td></tr>`)
+        $("#responserows").append(`<tr><td>${e.plaintext}</td><td>${e.encryptedText}</td><td>${e.method}</td><td>${e.key}</td><td>${e.attacker}</td><td>${e.entropy}</td><td>${e.factor}</td><td>${e.time}</td></tr>`)
       },
       error: function (jqXHR, textStatus, errorThrown) {
         alert("Error: " + jqXHR.responseText);

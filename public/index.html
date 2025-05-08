@@ -21,6 +21,14 @@
           <option value="AES">AES</option>
           <option value="Caeser Cipher">Ceaser Cipher</option>
           <option value="DES">DES</option> 
+          <option value="MD5">MD5</option>
+        </select>
+        Attacker Type:
+        <select id="attackerInput" name="attcker">          
+          <option value=1>One Computer (Single Individual)</option>
+          <option value=10>Ten Computers (Organized Group)</option>
+          <option value=100>One Hundred Computers (Corporation Level)</option> 
+          <option value=1000>One Thousand Computers (Less than a Nation-State probably)</option>
         </select>
         <button type="button" id="submitButton">Add</button>
       </fieldset>
@@ -29,7 +37,7 @@
     <div>
       <table id = "responseTable">
         <thead id = "responseHead">
-          <tr><th>Plaintext Password</th><th>Encrypted Text</th><th>Method</th><th>Key</th><th>Entropy Bits</th><th>Scheme Hardness Factor</th><th>Needed Strength</th></tr>          
+          <tr><th>Plaintext Password</th><th>Encrypted Text</th><th>Method</th><th>Key</th><th>Attacker Count</th><th>Entropy Bits</th><th>Scheme Hardness Factor</th><th>Time to Crack</th></tr>          
         </thead>
         <tbody id="responserows">
         </tbody>
