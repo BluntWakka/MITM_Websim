@@ -104,7 +104,6 @@ app.get("/submit", (req, res) => {
   var GPUHPS = 2208324013.0;
   var entropy = text.length * Math.log2(range(text));
   var seconds = ((Math.pow(2.0,entropy) / GPUHPS) / 8032.0) * encryptedResponse[2] / attackerCount;
-  console.log(seconds);
   var time = "";
   entropy = Math.ceil(entropy);
   seconds = Math.floor(seconds);

@@ -26,8 +26,23 @@ div#container {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
+div#welcome{
+  max-width: 1000px; 
+  margin: 20px auto;
+  padding: 25px;
+  background-color: #311717; 
+  border-radius: 8px;       
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+
 div#container:first-of-type { 
    margin-bottom: 30px;
+}
+
+img {
+  margin: auto;
+  display: block;
 }
 
 form {
