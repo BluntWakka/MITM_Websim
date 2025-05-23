@@ -5,6 +5,7 @@ const app = express();
 const CryptoJS = require('crypto-js');
 // Node.js built in crypto package
 const crypto = require('crypto');
+const namesGPU = ["AMD Radeon Vega 8","NVIDIA GeForce GTX 1060","NVIDIA GeForce RTX 2080 Ti","AMD Radeon RX 6800 XT","NVIDIA GeForce RTX 3080 Ti","AMD Radeon RX 7900 XT","NVIDIA GeForce RTX 4080","ASUS NVIDIA GeForce RTX 5080","NVIDIA GeForce RTX 4090","ASUS NVIDIA GeForce RTX 5090"];
 
 /**
  * Encrypt given password using user submitted type. Key is treated as optional or ignored if algorithm does not support it
@@ -28,6 +29,9 @@ function encrypt(type, toEncrypt, userKey)
     case "MD5":
       const MD5text = crypto.createHash('md5').update(toEncrypt).digest('hex');
       return [MD5text, "No Key Used",1]
+    case "SHA1":
+      const SHA1text = crypto.createHash('SHA1').update(toEncrypt).digest('hex');
+      return [SHA1text, "No Key Used", 3.02]    
   }
 }
 
@@ -101,7 +105,9 @@ app.get("/submit", (req, res) => {
   // ((2^entropy / GPU HPS) / 8032) = time
   // Add mutable variables to change time around based on specific conditions
   // ((2^entropy / GPU HPS) / 8032) * Hardness Factor / Attacker Count = time
-  var GPUHPS = 2208324013.0;
+  var GPUsplit = req.query.gpu.split(" ");
+  var GPUHPS = parseFloat(GPUsplit[0]);
+  var nameGPU = namesGPU[parseInt(GPUsplit[1])];
   var entropy = text.length * Math.log2(range(text));
   var seconds = ((Math.pow(2.0,entropy) / GPUHPS) / 8032.0) * encryptedResponse[2] / attackerCount;
   var time = "";
@@ -133,19 +139,20 @@ app.get("/submit", (req, res) => {
   {
     key = "No Key Used";
   }
-  e = new EncryptedEntry(text,encryptedResponse[0],method,key,attackerCount,entropy,encryptedResponse[2],time);
+  e = new EncryptedEntry(text,encryptedResponse[0],method,key,attackerCount,nameGPU,entropy,encryptedResponse[2],time);
   const ret = JSON.stringify(e);
   res.end(ret);
 });
 
 //Class useful for creating structured variable to access all necessary values efficiently from
 class EncryptedEntry {
-    constructor(plaintext, encryptedText, method, key, attacker, entropy, factor, time) {
+    constructor(plaintext, encryptedText, method, key, attacker, gpu, entropy, factor, time) {
       this.plaintext = plaintext;
       this.encryptedText = encryptedText;
       this.method = method;
       this.key = key;
       this.attacker = attacker;
+      this.gpu = gpu;
       this.entropy = entropy;
       this.factor = factor;
       this.time = time;

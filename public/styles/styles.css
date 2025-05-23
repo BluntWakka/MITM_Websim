@@ -36,6 +36,16 @@ div#welcome{
   text-align: center;
 }
 
+div.info{
+  max-width: 1000px; 
+  margin: 10px auto;
+  padding: 10px;
+  background-color: #17311a; 
+  border-radius: 8px;       
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+
 div#container:first-of-type { 
    margin-bottom: 30px;
 }

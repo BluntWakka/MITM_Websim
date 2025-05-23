@@ -8,7 +8,17 @@
 <body>
   <div id = "welcome">
     Welcome to the Man-In-The-Middle Testing Application!
+    Below is some information on each of the entries and their meaning.
   </div>
+  <div class="info"> <b>Plaintext/Password</b>: The text passed in and the desired information that an attacker would be attempting to decrypt. </div>
+  <div class="info"> <b>Encrypted Text</b>: The resultant text based on a combination of the given plaintext, the key entered, and the encryption scheme used.</div>
+  <div class="info"> <b>Key</b>: A key is a string of information that is used in an encryption scheme as the catalyst to base the ciphertext on. The same key will not produce the same result in a given scheme even if the entered information to encrypt is the same. If using a good encryption method, other charcters are typically intermingled and appened to keys in via salting and IVs. If no key is enetered and the encryption scheme requires one, a key will be generated and the text "No key used" will still be displayed.</div>
+  <div class="info"> <b>Method of Encyrption</b>: An encryption scheme is something that takes plaintext and transforms it into unusable text unless one posesses a key, thereby securing it against prying eyes and common attacks like credential stuffing.</div>
+  <div class="info"> <b>Attacker type</b>: Some attackers may use intricate networks of computers in order to efficiently split workloads and increase the effective computational power attempting to crack a given cipher. General metrics of how many computers are used in such schemes are provided.</div>
+  <div class="info"> <b>GPU Type</b>: Attackers and bad actors will utilize differnt GPUs (Graphics Processing Units) in order to check more possible keys per second. Different types of GPUs have widley varying strength, and some encryption methods are built specifically to combat mass hashing. </div>
+  <div class="info"> <b>Entropy Bits</b>: Entropy bits are a measure of how many attempts are needed to crack a given password. To get an estimate of the number of hashes necessary to crack a given ciphertext from this figure (excluding salting or IVs), simply calculate 2^(Entropy bits).</div>
+  <div class="info"> <b>Scheme Hardness Factor</b>: Certain encryption schemes have varying levels of difficulty to compute a single hash. This factor uses the MD5 scheme as a base point for the value one.</div>
+  <div class="info"> <b>Time to Crack</b>: The estimated time it would take given all previous conditions to crack a ciphertext (information based on real world efficient cracking techniques from Hashcat).</div>
   <div><img src="./assets/nubGif.gif" alt="Gif of hand made MITM stand in"></div>
   <div id="container">
     <form method="post">
@@ -23,13 +33,27 @@
           <option value="Caeser Cipher">Ceaser Cipher</option>
           <option value="DES">DES</option> 
           <option value="MD5">MD5</option>
+          <option value="SHA1">SHA1</option>
         </select>
         Attacker Type:
         <select id="attackerInput" name="attcker">          
           <option value=1>One Computer (Single Individual)</option>
           <option value=10>Ten Computers (Organized Group)</option>
           <option value=100>One Hundred Computers (Corporation Level)</option> 
-          <option value=1000>One Thousand Computers (Less than a Nation-State probably)</option>
+          <option value=1000>One Thousand Computers (Less than a Nation-State)</option>
+        </select>
+        GPU Type:
+        <select id="gpuInput" name="gpu">          
+          <option value="92088422 0">AMD Radeon Vega 8</option>
+          <option value="481636666 1">NVIDIA GeForce GTX 1060</option>
+          <option value="2121733333 2">NVIDIA GeForce RTX 2080 Ti</option>
+          <option value="2388483333 3">AMD Radeon RX 6800 XT</option>
+          <option value="2716917949 4">NVIDIA GeForce RTX 3080 Ti</option> 
+          <option value="2860234849 5">AMD Radeon RX 7900 XT</option>
+          <option value="3827457692 6">NVIDIA GeForce RTX 4080</option>
+          <option value="4110183333 7">ASUS NVIDIA GeForce RTX 5080</option>
+          <option value="6852700617 8">NVIDIA GeForce RTX 4090</option>
+          <option value="8890255357 9">ASUS NVIDIA GeForce RTX 5090</option>
         </select>
         <button type="button" id="submitButton">Add</button>
       </fieldset>
@@ -38,7 +62,7 @@
     <div>
       <table id = "responseTable">
         <thead id = "responseHead">
-          <tr><th>Plaintext Password</th><th>Encrypted Text</th><th>Method</th><th>Key</th><th>Attacker Count</th><th>Entropy Bits</th><th>Scheme Hardness Factor</th><th>Time to Crack</th></tr>          
+          <tr><th>Plaintext Password</th><th>Encrypted Text</th><th>Method</th><th>Key</th><th>Attacker Count</th><th>GPU Used</th><th>Entropy Bits</th><th>Scheme Hardness Factor</th><th>Time to Crack</th></tr>          
         </thead>
         <tbody id="responserows">
         </tbody>
